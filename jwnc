@@ -1,0 +1,41 @@
+<?php
+
+/**
+ * Define ROOT constant for the root path
+ */
+define('ROOT', realpath(dirname(__FILE__)));
+
+/**
+ * Register composer autoload
+ */
+require_once(__DIR__.'/vendor/autoload.php');
+
+/**
+ * Required classes
+ */
+use Jawan\Console\Console;
+
+/**
+ * Commands
+ */
+$commands = array(
+    Jawan\Console\Command\MakeControllerCommand::class,
+    Jawan\Console\Command\MakeModelCommand::class,
+    Jawan\Console\Command\ServeCommand::class
+);
+
+/**
+ * Create new Console instance
+ */
+$console = new Console();
+
+/**
+ * Register commands
+ */
+foreach ($commands as $command)
+    $console->add(new $command());
+
+/**
+ * Run the console
+ */
+$console->run();

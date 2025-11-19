@@ -1,0 +1,21 @@
+{
+    "name": "fhddev/jawan",
+    "description": "PHP MVC Framework for building and developing web based applications",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Fahad",
+			"homepage": "https://github.com/fhddev"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0",
+        "fhddev/jawan-framework": "^0.1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "App/"
+        }
+    }
+}

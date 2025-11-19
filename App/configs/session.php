@@ -1,0 +1,3 @@
+<?php
+
+$session['driver'] = 'memcached';
