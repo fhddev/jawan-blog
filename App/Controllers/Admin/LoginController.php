@@ -7,18 +7,19 @@ class LoginController extends ControllerBase {
 		parent::__construct();
     }
 
-	public function index()
+	public function login()
 	{
 		// show login form
 		return "login page";
 	}
 
-	public function login()
+	public function login_submit()
 	{
 		// login form submit
 	}
 
-	protected function checkAuthorization() {
+	protected function checkAuthorization()
+	{
 		//
 	}
 

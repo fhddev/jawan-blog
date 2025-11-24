@@ -37,7 +37,9 @@ abstract class ControllerBase extends JF_Controller {
 
 	protected function notFound()
 	{
-		return $this->app->getInstance()->loader->view('errors::e404');
+		$this->app->response->setOutput($this->app->loader->view('errors::e404'));
+		$this->app->response->send();
+		// return $this->app->getInstance()->loader->view('errors::e404');
 	}
 
 	protected function redirect($uri) {

@@ -9,11 +9,14 @@ Router::attach([
 	Route::get('/', 'HomeController@index')->name('home'),
 
 	//** Admin dashboard **//
+	
+	Route::get('/admin/install', 'Admin\InstallController@install'),
+	Route::post('/admin/install_submit', 'Admin\InstallController@install_submit'),
 
-	Route::get('/admin/login', 'Admin\LoginController@index')->name('login_form'),
-	Route::post('/admin/login', 'Admin\LoginController@login')->name('login_form_submit'),
+	Route::get('/admin/login', 'Admin\LoginController@login'),
+	Route::post('/admin/login_submit', 'Admin\LoginController@login_submit'),
 
-	Route::get('/admin/dashboard', 'Admin\DashboardController@index')->name('admin_dashboard'),
+	Route::get('/admin/dashboard', 'Admin\DashboardController@index'),
 	
 ]);
 

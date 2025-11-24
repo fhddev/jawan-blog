@@ -1,6 +1,6 @@
 <?php
 
 // pdo
-$database['dsn'] = 'mysql:jawan_blog;host=localhost';
+$database['dsn'] = 'mysql:dbname=jawan_blog;host=localhost';
 $database['user'] = 'root';
 $database['password'] = '';

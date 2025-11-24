@@ -3,3 +3,4 @@ composer-dev.json
 composer-dev.lock
 composer.local.json
 composer.local.lock
+webroot/images/pictures
