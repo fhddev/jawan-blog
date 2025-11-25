@@ -34,7 +34,7 @@ class LoginController extends ControllerBase {
 			->fetchObject();
 
 		if( ! $result || ! password_verify($user->password_hash, $result->password_hash) || ! in_array($result->role, ['admin', 'author']) )
-			return $this->app->loader->view('admin::login_form', ['errors'=>['Invalid Credentials']]);
+			return $this->app->loader->view('admin::login_form', ['errors'=>['Invalid Credentials or you don\'t have permission to login']]);
 
 		$this->app->session->attach('user', $result);
 		$this->app->session->attach('role', $result->role);
