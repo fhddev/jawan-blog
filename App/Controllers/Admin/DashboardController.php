@@ -9,8 +9,7 @@ class DashboardController extends ControllerBase {
 
 	public function index()
 	{
-		// show dashboard page
-		return "dashboard page";
+		return $this->app->loader->view('admin::dashboard');
 	}
 
 }
