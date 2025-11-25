@@ -37,8 +37,11 @@ class InstallController extends ControllerBase {
 
 		$this->app->db
 			->set([
+				'role' => 'admin',
 				'username' => $user->username,
 				'full_name' => $user->full_name,
+				'email' => $user->email,
+				'password_hash' => password_hash($user->password_hash, PASSWORD_DEFAULT),
 				'picture_path' => $user->picture_path,
 				'job_title' => $user->job_title,
 				'bio' => $user->bio,
@@ -74,6 +77,10 @@ class InstallController extends ControllerBase {
 
 		if( empty($this->app->input->post('username')) ) $errors[] = 'Username is required';
 		if( empty($this->app->input->post('full_name')) ) $errors[] = 'Full Name is required';
+		if( empty($this->app->input->post('email')) ) $errors[] = 'Email is required';
+		if( !filter_var($this->app->input->post('email'), FILTER_VALIDATE_EMAIL) ) $errors[] = 'Invalid email format';
+		if( empty($this->app->input->post('password_hash')) ) $errors[] = 'Password is required';
+		if( strlen($this->app->input->post('password_hash')) < 8 || strlen($this->app->input->post('password_hash')) > 32 ) $errors[] = 'password must be at least 8 characters to 32 characters';
 		if( empty($this->app->input->post('job_title')) ) $errors[] = 'Job Title is required';
 		if( empty($this->app->input->post('bio')) ) $errors[] = 'Bio is required';
 		if( empty($this->app->input->post('facebook_link')) ) $errors[] = 'Facebook Link is required';
@@ -132,6 +139,7 @@ class InstallController extends ControllerBase {
 			mkdir($targetDir, 0777, true);
 
 		$file = $_FILES[$field_name];
+		$fileName = basename($file['name']);
 		
 		$fileTmp  = $file['tmp_name'];
 		$fileExt  = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));

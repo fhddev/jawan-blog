@@ -4,7 +4,10 @@ USE jawan_blog;
 -- Users table
 CREATE TABLE IF NOT EXISTS users (
     user_id CHAR(36) PRIMARY KEY, -- UUID
+    role CHAR(30) NOT NULL,
     username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(50) NOT NULL UNIQUE,
+    password_hash VARCHAR(150) NOT NULL,
     full_name VARCHAR(100) NOT NULL,
     picture_path VARCHAR(255),
     job_title VARCHAR(100),

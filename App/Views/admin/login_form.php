@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Blog - Installation</title>
+    <title>Blog - Login</title>
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="/admin_assets/images/favicon.png">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
@@ -41,13 +41,12 @@
                         <div class="card login-form mb-0">
                             <div class="card-body pt-5">
                                 
-                                    <h4 class="text-center">Create Admin Account</h4>
+                                    <h4 class="text-center">Login</h4>
 
                                     <?php if( ENV === 1 ) renderList(get_defined_vars()); ?>
 
                                     <?php if ( ! empty($errors) ): ?>
                                         <div class="alert alert-danger">
-                                            <h5 class="alert-heading">Validation errors:</h5>
                                             <ul class="mb-0">
                                                 <?php foreach ($errors as $error): ?>
                                                     <li><?= htmlspecialchars($error) ?></li>
@@ -56,43 +55,15 @@
                                         </div>
                                     <?php endif; ?>
         
-                                    <form class="mt-5 mb-3 login-input" action="http://127.0.0.1:8000/admin/install_submit" method="POST" enctype="multipart/form-data">
+                                    <form class="mt-5 mb-3 login-input" action="http://127.0.0.1:8000/admin/login_submit" method="POST" enctype="multipart/form-data">
                                         <div class="form-group">
-                                            <input type="text" class="form-control"  placeholder="Username" name="username" value="<?= htmlspecialchars($model->username ?? '') ?>" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control"  placeholder="Full Name" name="full_name" value="<?= htmlspecialchars($model->full_name ?? '') ?>" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="email" class="form-control"  placeholder="Email" name="email" value="<?= htmlspecialchars($model->email ?? '') ?>" required>
+                                            <input type="email" class="form-control"  placeholder="Email" name="email" required>
                                         </div>
                                         <div class="form-group">
                                             <input type="password" class="form-control"  placeholder="Password" name="password_hash" required>
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="picture_path" class="form-label">Profile Picture</label>
-                                            <input class="form-control" type="file" id="picture_path" name="picture_path">
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control"  placeholder="Job Title" name="job_title" value="<?= htmlspecialchars($model->job_title ?? '') ?>" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <textarea name="bio" required placeholder="bio" class="form-control"><?= htmlspecialchars($model->bio ?? '') ?></textarea>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control"  placeholder="Facebook Account Link" name="facebook_link" value="<?= htmlspecialchars($model->facebook_link ?? '') ?>" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control"  placeholder="X Account Link" name="x_link" value="<?= htmlspecialchars($model->x_link ?? '') ?>" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control"  placeholder="Github Account Link" name="github_link" value="<?= htmlspecialchars($model->github_link ?? '') ?>" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control"  placeholder="Website Link" name="website_link" value="<?= htmlspecialchars($model->website_link ??  '') ?>" required>
-                                        </div>
                                         
-                                        <button class="btn login-form__btn submit w-100">Create</button>
+                                        <button class="btn login-form__btn submit w-100">Login</button>
                                     </form>
                                 </div>
                             </div>

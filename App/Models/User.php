@@ -5,7 +5,13 @@ class User {
 
     public $user_id;
 
+    public $role;
+
     public $username;
+
+    public $email;
+
+    public $password_hash;
 
     public $full_name;
 
@@ -30,7 +36,10 @@ class User {
         $u = new User();
 
         if( ! empty($data['user_id']) ) $u->user_id = $data['user_id'];
+        if( ! empty($data['role']) ) $u->role = $data['role'];
         if( ! empty($data['username']) ) $u->username = $data['username'];
+        if( ! empty($data['email']) ) $u->email = $data['email'];
+        if( ! empty($data['password_hash']) ) $u->password_hash = $data['password_hash'];
         if( ! empty($data['full_name']) ) $u->full_name = $data['full_name'];
         if( ! empty($data['picture_path']) ) $u->picture_path = $data['picture_path'];
         if( ! empty($data['job_title']) ) $u->job_title = $data['job_title'];
