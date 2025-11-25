@@ -42,35 +42,48 @@
                             <div class="card-body pt-5">
                                 
                                     <h4 class="text-center">Create Admin Account</h4>
+
+                                    <?php if( ENV === 1 ) renderList(get_defined_vars()); ?>
+
+                                    <?php if ( ! empty($errors) ): ?>
+                                        <div class="alert alert-danger">
+                                            <h5 class="alert-heading">Validation errors:</h5>
+                                            <ul class="mb-0">
+                                                <?php foreach ($errors as $error): ?>
+                                                    <li><?= htmlspecialchars($error) ?></li>
+                                                <?php endforeach; ?>
+                                            </ul>
+                                        </div>
+                                    <?php endif; ?>
         
                                     <form class="mt-5 mb-3 login-input" action="http://127.0.0.1:8000/admin/install_submit" method="POST" enctype="multipart/form-data">
                                         <div class="form-group">
-                                            <input type="text" class="form-control"  placeholder="Username" name="username" required>
+                                            <input type="text" class="form-control"  placeholder="Username" name="username" value="<?= htmlspecialchars($model->username ?? '') ?>" required>
                                         </div>
                                         <div class="form-group">
-                                            <input type="text" class="form-control"  placeholder="Full Name" name="full_name" required>
+                                            <input type="text" class="form-control"  placeholder="Full Name" name="full_name" value="<?= htmlspecialchars($model->full_name ?? '') ?>" required>
                                         </div>
                                         <div class="mb-3">
                                             <label for="picture_path" class="form-label">Profile Picture</label>
-                                            <input class="form-control" type="file" id="formFile" name="picture_path">
+                                            <input class="form-control" type="file" id="picture_path" name="picture_path">
                                         </div>
                                         <div class="form-group">
-                                            <input type="text" class="form-control"  placeholder="Job Title" name="job_title" required>
+                                            <input type="text" class="form-control"  placeholder="Job Title" name="job_title" value="<?= htmlspecialchars($model->job_title ?? '') ?>" required>
                                         </div>
                                         <div class="form-group">
-                                            <textarea name="bio" required placeholder="bio" class="form-control"></textarea>
+                                            <textarea name="bio" required placeholder="bio" class="form-control"><?= htmlspecialchars($model->bio ?? '') ?></textarea>
                                         </div>
                                         <div class="form-group">
-                                            <input type="text" class="form-control"  placeholder="Facebook Account Link" name="facebook_link" required>
+                                            <input type="text" class="form-control"  placeholder="Facebook Account Link" name="facebook_link" value="<?= htmlspecialchars($model->facebook_link ?? '') ?>" required>
                                         </div>
                                         <div class="form-group">
-                                            <input type="text" class="form-control"  placeholder="X Account Link" name="x_link" required>
+                                            <input type="text" class="form-control"  placeholder="X Account Link" name="x_link" value="<?= htmlspecialchars($model->x_link ?? '') ?>" required>
                                         </div>
                                         <div class="form-group">
-                                            <input type="text" class="form-control"  placeholder="Github Account Link" name="github_link" required>
+                                            <input type="text" class="form-control"  placeholder="Github Account Link" name="github_link" value="<?= htmlspecialchars($model->github_link ?? '') ?>" required>
                                         </div>
                                         <div class="form-group">
-                                            <input type="text" class="form-control"  placeholder="Website Link" name="website_link" required>
+                                            <input type="text" class="form-control"  placeholder="Website Link" name="website_link" value="<?= htmlspecialchars($model->website_link ??  '') ?>" required>
                                         </div>
                                         
                                         <button class="btn login-form__btn submit w-100">Create</button>
@@ -97,3 +110,13 @@
     <script src="/admin_assets/js/styleSwitcher.js"></script>
 </body>
 </html>
+
+<?php
+function renderList($data) {
+    echo '<div class="alert alert-info"><h5 class="alert-heading">Defined vars:</h5>';
+    echo '<pre style="background:#f8f9fa;border:1px solid #dee2e6;padding:1rem;overflow:auto">';
+    echo htmlspecialchars(print_r($data, true));
+    echo '</pre>';
+    echo '</ul></div>';
+}
+?>

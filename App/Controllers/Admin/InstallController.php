@@ -2,6 +2,7 @@
 namespace App\Controllers\Admin;
 
 use \PDO;
+use App\Models\User;
 
 class InstallController extends ControllerBase {
 	
@@ -14,31 +15,40 @@ class InstallController extends ControllerBase {
 
 	public function install()
 	{
-		return $this->app->loader->view('admin::install');
+		return $this->app->loader->view('admin::install', ['model'=>new User()]);
 	}
 
 	public function install_submit()
 	{
-		$fileName = uniqid("picture_path_", true) . "." . strtolower(pathinfo(basename($_FILES['picture_path']['name']), PATHINFO_EXTENSION));
+		$user = User::from_array($this->app->input->post());
 
-		$picture_path = ROOT . "/webroot/images/pictures/" . $fileName;
+		$errors = $this->validate($this->app->input->post());
 
-        move_uploaded_file($_FILES['picture_path']['tmp_name'], $picture_path);
+		if( count($errors) > 0 )
+		{
+			return $this->app->loader->view('admin::install', [
+				'errors' => $errors,
+				'model' => $user
+			]);
+		}
 
-		$stmt = $this->app->db->getConnection()->prepare("INSERT INTO users (username, full_name, picture_path, job_title, bio, facebook_link, x_link, github_link, website_link, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        
-		$stmt->execute([
-			$this->app->input->post('username'),
-			$this->app->input->post('full_name'),
-			$picture_path,
-			$this->app->input->post('job_title'),
-			$this->app->input->post('bio'),
-			$this->app->input->post('facebook_link'),
-			$this->app->input->post('x_link'),
-			$this->app->input->post('github_link'),
-			$this->app->input->post('website_link'),
-			date("Y-m-d H:i:s")
-		]);
+		$user->picture_path = $this->upload_picture('picture_path');
+		$user->created_at = date("Y-m-d H:i:s");
+
+		$this->app->db
+			->set([
+				'username' => $user->username,
+				'full_name' => $user->full_name,
+				'picture_path' => $user->picture_path,
+				'job_title' => $user->job_title,
+				'bio' => $user->bio,
+				'facebook_link' => $user->facebook_link,
+				'x_link' => $user->x_link,
+				'github_link' => $user->github_link,
+				'website_link' => $user->website_link,
+				'created_at' => $user->created_at
+			])
+			->insert('users');
 
 		$this->redirect('http://127.0.0.1:8000/admin/login');
 	}
@@ -58,15 +68,80 @@ class InstallController extends ControllerBase {
 		// disable checking
 	}
 
-	protected function validate($data)
+	protected function validate($data, $create = true)
 	{
 		$errors = [];
 
-		if(empty($data['username'])) $errors[] = "Username is required";
-		if(empty($data['full_name'])) $errors[] = "Full name is required";
-		if(empty($data['picture_url'])) $errors[] = "Full name is required";
+		if( empty($this->app->input->post('username')) ) $errors[] = 'Username is required';
+		if( empty($this->app->input->post('full_name')) ) $errors[] = 'Full Name is required';
+		if( empty($this->app->input->post('job_title')) ) $errors[] = 'Job Title is required';
+		if( empty($this->app->input->post('bio')) ) $errors[] = 'Bio is required';
+		if( empty($this->app->input->post('facebook_link')) ) $errors[] = 'Facebook Link is required';
+		if( empty($this->app->input->post('x_link')) ) $errors[] = 'X Link is required';
+		if( empty($this->app->input->post('github_link')) ) $errors[] = 'Github Link is required';
+		if( empty($this->app->input->post('website_link')) ) $errors[] = 'Website Link is required';
+
+		/**
+		 * 
+		 * Validate uploaded picture
+		 * 
+		 */
+
+		$field_name = 'picture_path';
+
+		if( $create && empty($_FILES[$field_name]) )
+		{
+			$errors[] = 'Picture is required';
+		}
+		else if( ! empty($_FILES[$field_name]) )
+		{
+			$file = $_FILES[$field_name];
+
+			$allowedTypes = ['jpg', 'jpeg', 'png', 'gif', 'pdf'];
+			$maxSize = 2 * 1024 * 1024; // 2 MB
+
+			$fileName = basename($file['name']);
+			$fileSize = $file['size'];
+			$fileTmp  = $file['tmp_name'];
+			$fileExt  = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+			if ( ! in_array($fileExt, $allowedTypes) )
+			{
+				$errors[] = "Invalid file type. Allowed: " . implode(", ", $allowedTypes);
+			}
+
+			if ( $fileSize > $maxSize )
+			{
+				$errors[] = "File too large. Max size is 2MB.";
+			}
+
+			if ( $file['error'] !== UPLOAD_ERR_OK )
+			{
+				$errors[] = "Upload error code: " . $file['error'];
+			}
+		}
 
 		return $errors;
+	}
+
+	protected function upload_picture($field_name)
+	{
+		$targetDir = ROOT . "/webroot/images/pictures/";
+
+		if ( ! is_dir($targetDir) )
+			mkdir($targetDir, 0777, true);
+
+		$file = $_FILES[$field_name];
+		
+		$fileTmp  = $file['tmp_name'];
+		$fileExt  = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+		$newName = uniqid("picture_", true) . "." . $fileExt;
+		$targetFile = $targetDir . $newName;
+
+		return move_uploaded_file($fileTmp, $targetFile)
+			? "images/pictures/$newName"
+			: '';
 	}
 
 }
