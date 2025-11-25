@@ -16,6 +16,8 @@ Router::attach([
 	Route::get('/admin/login', 'Admin\LoginController@login'),
 	Route::post('/admin/login_submit', 'Admin\LoginController@login_submit'),
 
+	Route::get('/admin/logout', 'Admin\LogoutController@index'),
+
 	Route::get('/admin/dashboard', 'Admin\DashboardController@index'),
 	
 ]);
