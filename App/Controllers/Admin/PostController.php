@@ -77,6 +77,8 @@ class PostController extends ControllerBase {
 	{
 		$entity = $this->app->db->getConnection()->query('select * from posts where post_id=' . $id)->fetchObject();
 
+		$entity = Post::from_array( (array) $entity );
+
 		if( ! $entity )
 			return $this->notFound();
 
@@ -87,32 +89,35 @@ class PostController extends ControllerBase {
 	{
 		$entity = $this->app->db->getConnection()->query('select * from posts where post_id=' . $id)->fetchObject();
 
+		$entity = Post::from_array( (array) $entity );
+
 		if( ! $entity )
 			return $this->notFound();
 
-		$errors = $this->validateEdit($this->app->input->post());
+		$errors = $this->validate($this->app->input->post(), true);
 
 		if( count($errors) > 0 )
 		{
 			return $this->app->loader->view('admin::posts::edit_form', [
 				'errors' => $errors,
-				'model' => $user
+				'model' => $entity
 			]);
 		}
 
-		if( $_FILES['conver_image'] !== null )
-			$entity->conver_image = $this->upload_picture('conver_image');
+		if( ! empty($_FILES['cover_image']) )
+			$entity->cover_image = $this->upload_picture('cover_image');
 
 		$this->app->db
 			->set([
 				'url_slug' => $entity->url_slug,
 				'title' => $entity->title,
-				'x_minutes_read' => calculateReadingTime($entity->content),
+				'x_minutes_read' => $this->calculateReadingTime($entity->content),
 				'category' => $entity->category,
 				'tags' => $entity->encodeTags($entity->tags),
 				'content' => $entity->content,
-				'conver_image' => $entity->conver_image
+				'cover_image' => $entity->cover_image
 			])
+			->where('post_id', $entity->post_id)
 			->update('posts');
 
 		$this->app->session->attach('alert', ['type'=>'success', 'alert-message'=>'Post updated']);
@@ -166,67 +171,7 @@ class PostController extends ControllerBase {
 		{
 			$errors[] = 'Cover Image is required';
 		}
-		else if( ! empty($_FILES[$field_name]) )
-		{
-			$file = $_FILES[$field_name];
-
-			$allowedTypes = ['jpg', 'jpeg', 'png', 'gif', 'pdf'];
-			$maxSize = 2 * 1024 * 1024; // 2 MB
-
-			$fileName = basename($file['name']);
-			$fileSize = $file['size'];
-			$fileTmp  = $file['tmp_name'];
-			$fileExt  = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-
-			if ( ! in_array($fileExt, $allowedTypes) )
-			{
-				$errors[] = "Invalid file type. Allowed: " . implode(", ", $allowedTypes);
-			}
-
-			if ( $fileSize > $maxSize )
-			{
-				$errors[] = "File too large. Max size is 2MB.";
-			}
-
-			if ( $file['error'] !== UPLOAD_ERR_OK )
-			{
-				$errors[] = "Upload error code: " . $file['error'];
-			}
-		}
-
-		return $errors;
-	}
-
-	protected function validateEdit($data, $create = true)
-	{
-		$errors = [];
-
-		if( empty($this->app->input->post('username')) ) $errors[] = 'Username is required';
-		if( empty($this->app->input->post('full_name')) ) $errors[] = 'Full Name is required';
-		if( empty($this->app->input->post('email')) ) $errors[] = 'Email is required';
-		if( !filter_var($this->app->input->post('email'), FILTER_VALIDATE_EMAIL) ) $errors[] = 'Invalid email format';
-		if( empty($this->app->input->post('password_hash')) ) $errors[] = 'Password is required';
-		if( strlen($this->app->input->post('password_hash')) < 8 || strlen($this->app->input->post('password_hash')) > 32 ) $errors[] = 'password must be at least 8 characters to 32 characters';
-		if( empty($this->app->input->post('job_title')) ) $errors[] = 'Job Title is required';
-		if( empty($this->app->input->post('bio')) ) $errors[] = 'Bio is required';
-		if( empty($this->app->input->post('facebook_link')) ) $errors[] = 'Facebook Link is required';
-		if( empty($this->app->input->post('x_link')) ) $errors[] = 'X Link is required';
-		if( empty($this->app->input->post('github_link')) ) $errors[] = 'Github Link is required';
-		if( empty($this->app->input->post('website_link')) ) $errors[] = 'Website Link is required';
-
-		/**
-		 * 
-		 * Validate uploaded picture
-		 * 
-		 */
-
-		$field_name = 'picture_path';
-
-		if( $create && empty($_FILES[$field_name]) )
-		{
-			$errors[] = 'Picture is required';
-		}
-		else if( ! empty($_FILES[$field_name]) )
+		else if( ! empty($_FILES[$field_name]['name']) )
 		{
 			$file = $_FILES[$field_name];
 

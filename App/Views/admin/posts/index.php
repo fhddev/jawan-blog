@@ -19,14 +19,14 @@
                             <?php foreach($rows as $row): ?>
                             <tr>
                                 <td>
-                                    <a href="http://127.0.0.1:8000/admin/posts/details/<?= $row->post_id; ?>"><?= htmlspecialchars($row->title) ?></a>
+                                    <a href="http://127.0.0.1:8000/admin/posts/details/<?= $row->post_id; ?>" class="text-dark"><?= htmlspecialchars($row->title) ?></a>
                                 </td>
                                 <td><?= htmlspecialchars($row->category) ?></td>
                                 <td><?= array_to_badges($row->decodeTags()) ?></td>
                                 <td class="actions">
-                                    <a href="http://127.0.0.1:8000/admin/posts/details/<?= $row->post_id; ?>">View</a>
-                                    <a href="http://127.0.0.1:8000/admin/posts/edit/<?= $row->post_id; ?>">Edit</a>
-                                    <a href="http://127.0.0.1:8000/admin/posts/delete_confirmation/<?= $row->post_id; ?>">Delete</a>
+                                    <a href="http://127.0.0.1:8000/admin/posts/details/<?= $row->post_id; ?>" class="text-dark">View</a>
+                                    <a href="http://127.0.0.1:8000/admin/posts/edit/<?= $row->post_id; ?>" class="text-dark">Edit</a>
+                                    <a href="http://127.0.0.1:8000/admin/posts/delete_confirmation/<?= $row->post_id; ?>" class="text-dark">Delete</a>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
