@@ -19,6 +19,15 @@ Router::attach([
 	Route::get('/admin/logout', 'Admin\LogoutController@index'),
 
 	Route::get('/admin/dashboard', 'Admin\DashboardController@index'),
+
+	Route::get('/admin/posts', 'Admin/PostController@index'),
+	Route::get('/admin/posts/create', 'Admin/PostController@create'),
+	Route::post('/admin/posts/create_submit', 'Admin/PostController@create_submit'),
+	Route::get('/admin/posts/details/id', 'Admin/PostController@details|id')->where(['id'=>'(\d+)']),
+	Route::get('/admin/posts/edit', 'Admin/PostController@edit'),
+	Route::post('/admin/posts/edit_submit', 'Admin/PostController@edit_submit'),
+	Route::get('/admin/posts/delete_confirmation', 'Admin/PostController@delete_confirmation'),
+	Route::post('/admin/posts/destroy', 'Admin/PostController@destroy')
 	
 ]);
 

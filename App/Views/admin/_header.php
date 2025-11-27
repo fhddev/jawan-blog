@@ -1,3 +1,4 @@
+<?php include_once ROOT . '/App/includes/html_helpers.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,6 +9,13 @@
     <title>Blog</title>
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="/admin_assets/images/favicon.png">
+    <!-- Choices.js -->
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/base.min.css"/>
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"/>
+     <!-- include summernote css/js -->
+     <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.css" rel="stylesheet">
+     <!-- datatable -->
+    <link href="https://cdn.datatables.net/2.3.5/css/dataTables.bootstrap5.css" rel="stylesheet">
     <!-- Custom Stylesheet -->
     <link href="/admin_assets/css/style.css" rel="stylesheet">
 

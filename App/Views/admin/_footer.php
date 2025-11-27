@@ -31,6 +31,11 @@
     <script src="/admin_assets/js/settings.js"></script>
     <script src="/admin_assets/js/gleek.js"></script>
     <script src="/admin_assets/js/styleSwitcher.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.js"></script>
+    <script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.3.5/js/dataTables.bootstrap5.js"></script>
+    <script src="/admin_assets/js/custom.js"></script>
 
 </body>
 
