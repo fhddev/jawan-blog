@@ -3,8 +3,13 @@
 <div class="row">
     <div class="col-12">
         <div class="card">
+            
             <div class="card-body">
-                <h4 class="card-title">Data Table</h4>
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="card-title">Posts</h4>
+                    <a href="http://127.0.0.1:8000/admin/posts/create" class="btn btn-primary">New +</a>
+                </div>
+                <!-- <h4 class="card-title">Posts</h4> -->
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered zero-configuration" id="mytable">
                         <thead>

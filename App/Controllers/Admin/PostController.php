@@ -15,8 +15,6 @@ class PostController extends ControllerBase {
 	{
 		$rows = $this->app->db->getConnection()->query('select * from posts')->fetchAll(PDO::FETCH_CLASS, Post::class);
 
-		vd($rows[1]->decodeTags());
-
 		return $this->app->loader->view('admin::posts::index', ['rows' => $rows]);
 	}
 
@@ -90,11 +88,12 @@ class PostController extends ControllerBase {
 		$entity = $this->app->db->getConnection()->query('select * from posts where post_id=' . $id)->fetchObject();
 
 		$entity = Post::from_array( (array) $entity );
+		$newEntity = Post::from_array($this->app->input->post());
 
 		if( ! $entity )
 			return $this->notFound();
 
-		$errors = $this->validate($this->app->input->post(), true);
+		$errors = $this->validate($this->app->input->post(), false);
 
 		if( count($errors) > 0 )
 		{
@@ -104,18 +103,20 @@ class PostController extends ControllerBase {
 			]);
 		}
 
-		if( ! empty($_FILES['cover_image']) )
-			$entity->cover_image = $this->upload_picture('cover_image');
-
+		if( ! empty($_FILES['cover_image']['name']) )
+			$newEntity->cover_image = $this->upload_picture('cover_image');
+		else
+			$newEntity->cover_image = $entity->cover_image;
+		
 		$this->app->db
 			->set([
-				'url_slug' => $entity->url_slug,
-				'title' => $entity->title,
-				'x_minutes_read' => $this->calculateReadingTime($entity->content),
-				'category' => $entity->category,
-				'tags' => $entity->encodeTags($entity->tags),
-				'content' => $entity->content,
-				'cover_image' => $entity->cover_image
+				'url_slug' => $newEntity->url_slug,
+				'title' => $newEntity->title,
+				'x_minutes_read' => $this->calculateReadingTime($newEntity->content),
+				'category' => $newEntity->category,
+				'tags' => $newEntity->encodeTags($newEntity->tags),
+				'content' => $newEntity->content,
+				'cover_image' => $newEntity->cover_image
 			])
 			->where('post_id', $entity->post_id)
 			->update('posts');
@@ -127,7 +128,9 @@ class PostController extends ControllerBase {
 
 	public function delete_confirmation($id)
 	{
-		$entity = $this->app->db->getConnection()->query('select * from posts where post_id=' . $id)->fetchObject();
+		$entity = $this->app->db->getConnection()->query('select * from posts where post_id=' . $id)->fetch(PDO::FETCH_ASSOC);
+
+		$entity = Post::from_array( $entity );
 
 		if( ! $entity )
 			return $this->notFound();
@@ -137,7 +140,9 @@ class PostController extends ControllerBase {
 
 	public function destroy($id)
 	{
-		$entity = $this->app->db->getConnection()->query('select * from posts where post_id=' . $id)->fetchObject();
+		$entity = Post::from_array(
+			$this->app->db->getConnection()->query('select * from posts where post_id=' . $id)->fetch(PDO::FETCH_ASSOC)
+		);
 
 		if( ! $entity )
 			return $this->notFound();
@@ -167,7 +172,7 @@ class PostController extends ControllerBase {
 
 		$field_name = 'cover_image';
 
-		if( $create && empty($_FILES[$field_name]) )
+		if( $create && empty($_FILES[$field_name]['name']) )
 		{
 			$errors[] = 'Cover Image is required';
 		}
