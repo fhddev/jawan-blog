@@ -117,16 +117,6 @@
                             <i class="icon-note menu-icon"></i><span class="nav-text">Posts</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="http://127.0.0.1:8000/admin/categories" aria-expanded="false">
-                            <i class="icon-list menu-icon"></i><span class="nav-text">Categories</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="http://127.0.0.1:8000/admin/tags" aria-expanded="false">
-                            <i class="icon-tag menu-icon"></i><span class="nav-text">Tags</span>
-                        </a>
-                    </li>
 
                     <li class="nav-label">User Management</li>
                     <li>
