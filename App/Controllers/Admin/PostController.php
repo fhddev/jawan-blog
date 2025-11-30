@@ -13,55 +13,81 @@ class PostController extends ControllerBase {
 
 	public function index()
 	{
-		$rows = $this->app->db->getConnection()->query('select * from posts')->fetchAll(PDO::FETCH_CLASS, Post::class);
+		$rows = $this->app->db
+			->getConnection()
+			->query('select * from posts')
+			->fetchAll(PDO::FETCH_CLASS, Post::class);
 
-		return $this->app->loader->view('admin::posts::index', ['rows' => $rows]);
+		return $this->app->loader->view(
+			'admin::posts::index',
+			[
+				'rows' => $rows,
+				'app'=>$this->app
+			]
+		);
 	}
 
 	public function create()
 	{
-		return $this->app->loader->view('admin::posts::create_form', ['model' => new Post()]);
+		return $this->app->loader->view(
+			'admin::posts::create_form',
+			[
+				'model' => new Post()
+			]
+		);
 	}
 
 	public function create_submit()
 	{
-		$entity = Post::from_array($this->app->input->post());
+		$postData = $this->app->input->post();
+    	
+		$entity = Post::from_array($postData);
 
-		$errors = $this->validate($this->app->input->post());
+		$errors = $this->validate($postData);
 
-		if( count($errors) > 0 )
-		{
-			return $this->app->loader->view('admin::posts::create_form', [
-				'errors' => $errors,
-				'model' => $entity
-			]);
+		if (!empty($errors)) {
+			return $this->app->loader->view(
+				'admin::posts::create_form',
+				[
+					'errors' => $errors,
+					'model'  => $entity,
+				]
+			);
 		}
 
 		$entity->cover_image = $this->upload_picture('cover_image');
-		$entity->created_at = date("Y-m-d H:i:s");
+		$entity->created_at  = date("Y-m-d H:i:s");
+		$entity->author_id   = $this->app->session->fetch('user')->user_id;
+		$entity->x_minutes_read = $this->calculateReadingTime($entity->content);
 
 		$this->app->db
 			->set([
-				'url_slug' => $entity->url_slug,
-				'title' => $entity->title,
-				'author_id' => $this->app->session->fetch('user')->user_id,
-				'x_minutes_read' => $this->calculateReadingTime($entity->content),
-				'created_at' => $entity->created_at,
-				'category' => $entity->category,
-				'tags' => $entity->encodeTags($entity->tags),
-				'content' => $entity->content,
-				'cover_image' => $entity->cover_image
+				'url_slug'       => $entity->url_slug,
+				'title'          => $entity->title,
+				'author_id'      => $entity->author_id,
+				'x_minutes_read' => $entity->x_minutes_read,
+				'created_at'     => $entity->created_at,
+				'category'       => $entity->category,
+				'tags'           => $entity->encodeTags($entity->tags),
+				'content'        => $entity->content,
+				'cover_image'    => $entity->cover_image,
 			])
 			->insert('posts');
+		
+		$this->app->session->attach('alert', [
+			'type'=>'success',
+			'alert-message'=>'Post created'
+		]);
 
-		$this->app->session->attach('alert', ['type'=>'success', 'alert-message'=>'Post created']);
-
-		$this->redirect('http://127.0.0.1:8000/admin/posts');
+		$this->redirect('/admin/posts');
 	}
 
 	public function details($id)
 	{
-		$entity = $this->app->db->getConnection()->query('select * from posts where post_id=' . $id)->fetchObject();
+		$entity = $this->app->db
+			->getConnection()
+			->query('select * from posts where post_id=' . $id)
+			->fetchObject();
 
 		$entity = Post::from_array( (array) $entity );
 
@@ -85,22 +111,29 @@ class PostController extends ControllerBase {
 
 	public function edit_submit($id)
 	{
-		$entity = $this->app->db->getConnection()->query('select * from posts where post_id=' . $id)->fetchObject();
+		$entity = $this->app->db
+			->getConnection()
+			->query('select * from posts where post_id=' . $id)
+			->fetchObject();
+
+		$postData = $this->app->input->post();
 
 		$entity = Post::from_array( (array) $entity );
-		$newEntity = Post::from_array($this->app->input->post());
+		
+		$newEntity = Post::from_array($postData);
 
 		if( ! $entity )
 			return $this->notFound();
 
-		$errors = $this->validate($this->app->input->post(), false);
+		$errors = $this->validate($postData, false);
 
-		if( count($errors) > 0 )
-		{
-			return $this->app->loader->view('admin::posts::edit_form', [
-				'errors' => $errors,
-				'model' => $entity
-			]);
+		if ( ! empty($errors) ) {
+			return $this->app->loader->view(
+				'admin::posts::edit_form', [
+					'errors' => $errors,
+					'model' => $entity
+				]
+			);
 		}
 
 		if( ! empty($_FILES['cover_image']['name']) )
@@ -121,87 +154,101 @@ class PostController extends ControllerBase {
 			->where('post_id', $entity->post_id)
 			->update('posts');
 
-		$this->app->session->attach('alert', ['type'=>'success', 'alert-message'=>'Post updated']);
+		$this->app->session->attach('alert',
+			[
+				'type'=>'success',
+				'alert-message'=>'Post updated'
+			]
+		);
 
-		$this->redirect('http://127.0.0.1:8000/admin/posts');
+		$this->redirect('/admin/posts');
 	}
 
 	public function delete_confirmation($id)
 	{
-		$entity = $this->app->db->getConnection()->query('select * from posts where post_id=' . $id)->fetch(PDO::FETCH_ASSOC);
+		$entity = $this->app->db
+			->getConnection()
+			->query('select * from posts where post_id=' . $id)
+			->fetch(PDO::FETCH_ASSOC);
 
 		$entity = Post::from_array( $entity );
 
 		if( ! $entity )
 			return $this->notFound();
 
-		return $this->app->loader->view('admin::posts::delete_confirmation_form', ['model' => $entity]);
+		return $this->app->loader->view(
+			'admin::posts::delete_confirmation_form',
+			[
+				'model' => $entity
+			]
+		);
 	}
 
 	public function destroy($id)
 	{
 		$entity = Post::from_array(
-			$this->app->db->getConnection()->query('select * from posts where post_id=' . $id)->fetch(PDO::FETCH_ASSOC)
+			$this->app->db
+				->getConnection()
+				->query('select * from posts where post_id=' . $id)
+				->fetch(PDO::FETCH_ASSOC)
 		);
 
 		if( ! $entity )
 			return $this->notFound();
 
-		$this->app->db->where('post_id', $entity->post_id)->delete('posts');
+		$this->app->db
+			->where('post_id', $entity->post_id)
+			->delete('posts');
 
-		$this->app->session->attach('alert', ['type'=>'success', 'alert-message'=>'Post delete']);
+		$this->app->session->attach('alert', [
+			'type'=>'success',
+			'alert-message'=>'Post delete'
+		]);
 
-		$this->redirect('http://127.0.0.1:8000/admin/posts');
+		$this->redirect('/admin/posts');
 	}
 
-	protected function validate($data, $create = true)
+	protected function validate(array $data, bool $create = true): array
 	{
 		$errors = [];
 
-		if( empty($this->app->input->post('url_slug')) ) $errors[] = 'URL Slug is required';
-		if( empty($this->app->input->post('title')) ) $errors[] = 'Title is required';
-		if( empty($this->app->input->post('category')) ) $errors[] = 'Category is required';
-		if( empty($this->app->input->post('tags')) ) $errors[] = 'Tags is required';
-		if( empty($this->app->input->post('content')) ) $errors[] = 'Content is required';
+		$requiredFields = ['url_slug', 'title', 'category', 'tags', 'content'];
 
-		/**
-		 * 
-		 * Validate uploaded picture
-		 * 
-		 */
+		foreach ($requiredFields as $field)
+			if (empty($data[$field])) $errors[] = ucfirst($field) . ' is required';
 
-		$field_name = 'cover_image';
+		$file      = $_FILES['cover_image'] ?? null;
 
-		if( $create && empty($_FILES[$field_name]['name']) )
-		{
+		if ($create && empty($file['name'])) {
 			$errors[] = 'Cover Image is required';
+		} elseif (!empty($file['name'])) {
+			$errors = array_merge($errors, $this->validateFile($file));
 		}
-		else if( ! empty($_FILES[$field_name]['name']) )
-		{
-			$file = $_FILES[$field_name];
 
-			$allowedTypes = ['jpg', 'jpeg', 'png', 'gif', 'pdf'];
-			$maxSize = 2 * 1024 * 1024; // 2 MB
+		return $errors;
+	}
 
-			$fileName = basename($file['name']);
-			$fileSize = $file['size'];
-			$fileTmp  = $file['tmp_name'];
-			$fileExt  = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+	protected function validateFile(array $file): array
+	{
+		$errors = [];
 
-			if ( ! in_array($fileExt, $allowedTypes) )
-			{
-				$errors[] = "Invalid file type. Allowed: " . implode(", ", $allowedTypes);
-			}
+		$allowedTypes = ['jpg', 'jpeg', 'png', 'gif', 'pdf'];
+		$maxSize      = 2 * 1024 * 1024; // 2 MB
 
-			if ( $fileSize > $maxSize )
-			{
-				$errors[] = "File too large. Max size is 2MB.";
-			}
+		$fileName = basename($file['name']);
+		$fileSize = $file['size'];
+		$fileExt  = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
-			if ( $file['error'] !== UPLOAD_ERR_OK )
-			{
-				$errors[] = "Upload error code: " . $file['error'];
-			}
+		if (!in_array($fileExt, $allowedTypes)) {
+			$errors[] = "Invalid file type. Allowed: " . implode(", ", $allowedTypes);
+		}
+
+		if ($fileSize > $maxSize) {
+			$errors[] = "File too large. Max size is 2MB.";
+		}
+
+		if ($file['error'] !== UPLOAD_ERR_OK) {
+			$errors[] = "Upload error code: " . $file['error'];
 		}
 
 		return $errors;

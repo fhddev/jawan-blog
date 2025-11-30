@@ -14,17 +14,18 @@
                 <?php endif; ?>
 
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="card-title">Posts</h4>
-                    <a href="http://127.0.0.1:8000/admin/posts/create" class="btn btn-primary">New +</a>
+                    <h4 class="card-title">Users</h4>
+                    <a href="http://127.0.0.1:8000/admin/users/create" class="btn btn-primary">New +</a>
                 </div>
-                <!-- <h4 class="card-title">Posts</h4> -->
+
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered zero-configuration" id="mytable">
                         <thead>
                             <tr>
-                                <th>Title</th>
-                                <th>Category</th>
-                                <th>Tags</th>
+                                <th>Username</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -32,23 +33,27 @@
                             <?php foreach($rows as $row): ?>
                             <tr>
                                 <td>
-                                    <a href="http://127.0.0.1:8000/admin/posts/details/<?= $row->post_id; ?>" class="text-dark"><?= htmlspecialchars($row->title) ?></a>
+                                    <a href="http://127.0.0.1:8000/admin/users/details/<?= $row->user_id; ?>" class="text-dark">
+                                        <?= htmlspecialchars($row->username) ?>
+                                    </a>
                                 </td>
-                                <td><?= htmlspecialchars($row->category) ?></td>
-                                <td><?= array_to_badges($row->decodeTags()) ?></td>
+                                <td><?= htmlspecialchars($row->full_name) ?></td>
+                                <td><?= htmlspecialchars($row->email) ?></td>
+                                <td><?= htmlspecialchars($row->role) ?></td>
                                 <td class="actions">
-                                    <a href="http://127.0.0.1:8000/admin/posts/details/<?= $row->post_id; ?>" class="text-dark">View</a>
-                                    <a href="http://127.0.0.1:8000/admin/posts/edit/<?= $row->post_id; ?>" class="text-dark">Edit</a>
-                                    <a href="http://127.0.0.1:8000/admin/posts/delete_confirmation/<?= $row->post_id; ?>" class="text-dark">Delete</a>
+                                    <a href="http://127.0.0.1:8000/admin/users/details/<?= $row->user_id; ?>" class="text-dark">View</a>
+                                    <a href="http://127.0.0.1:8000/admin/users/edit/<?= $row->user_id; ?>" class="text-dark">Edit</a>
+                                    <a href="http://127.0.0.1:8000/admin/users/delete_confirmation/<?= $row->user_id; ?>" class="text-dark">Delete</a>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th>Title</th>
-                                <th>Category</th>
-                                <th>Tags</th>
+                                <th>Username</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
                                 <th>Actions</th>
                             </tr>
                         </tfoot>

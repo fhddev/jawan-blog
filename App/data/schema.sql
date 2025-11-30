@@ -1,9 +1,11 @@
+-- drop database jawan_blog;
+
 CREATE DATABASE IF NOT EXISTS jawan_blog;
 USE jawan_blog;
 
 -- Users table
 CREATE TABLE IF NOT EXISTS users (
-    user_id CHAR(36) PRIMARY KEY, -- UUID
+    user_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     role CHAR(30) NOT NULL,
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(50) NOT NULL UNIQUE,
@@ -24,11 +26,11 @@ CREATE TABLE IF NOT EXISTS posts (
     post_id INT AUTO_INCREMENT PRIMARY KEY,
     url_slug VARCHAR(150) NOT NULL UNIQUE,
     title VARCHAR(255) NOT NULL,
-    author_id CHAR(36) NOT NULL,
+    author_id INT UNSIGNED NOT NULL,
     x_minutes_read INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     category VARCHAR(100),
-    tags JSON,
+    tags LONGTEXT,
     content TEXT NOT NULL,
     cover_image VARCHAR(255),
     FOREIGN KEY (author_id) REFERENCES users(user_id) ON DELETE CASCADE
@@ -38,7 +40,7 @@ CREATE TABLE IF NOT EXISTS posts (
 CREATE TABLE IF NOT EXISTS comments (
     comment_id INT AUTO_INCREMENT PRIMARY KEY,
     post_id INT NOT NULL,
-    user_id CHAR(36) NOT NULL,
+    user_id INT UNSIGNED NOT NULL,
     content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE,
