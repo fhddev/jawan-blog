@@ -65,6 +65,8 @@
                                         
                                         <button class="btn login-form__btn submit w-100">Login</button>
                                     </form>
+
+                                    <a href="/admin/install">Go to installation page</a>
                                 </div>
                             </div>
                         </div>

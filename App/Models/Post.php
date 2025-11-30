@@ -11,6 +11,8 @@ class Post {
 
     public $author_id;
 
+    public $author;
+
     public $x_minutes_read;
 
     public $created_at;
@@ -31,6 +33,7 @@ class Post {
         if( ! empty($data['url_slug']) ) $e->url_slug = $data['url_slug'];
         if( ! empty($data['title']) ) $e->title = $data['title'];
         if( ! empty($data['author_id']) ) $e->author_id = $data['author_id'];
+        if( ! empty($data['user_id']) ) $e->author = User::from_array($data);
         if( ! empty($data['x_minutes_read']) ) $e->x_minutes_read = $data['x_minutes_read'];
         if( ! empty($data['created_at']) ) $e->created_at = $data['created_at'];
         if( ! empty($data['category']) ) $e->category = $data['category'];
@@ -49,6 +52,23 @@ class Post {
     public function decodeTags()
     {
         return json_decode(html_entity_decode($this->tags), true);
+    }
+
+    public function get_short_content(int $length = 150): string
+    {
+        $text = strip_tags($this->content);
+        $text = html_entity_decode($text);
+        $text = preg_replace('/\s+/', ' ', $text);
+        $text = trim($text);
+
+        if (strlen($text) <= $length) {
+            return $text;
+        }
+
+        $short = substr($text, 0, $length);
+        $short = preg_replace('/\s+?(\S+)?$/', '', $short);
+
+        return $short . '...';
     }
 
 }
