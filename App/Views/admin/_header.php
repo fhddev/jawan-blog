@@ -125,6 +125,13 @@
                         </a>
                     </li>
 
+                    <li class="nav-label">Newsletter / Marketing</li>
+                    <li>
+                        <a href="http://127.0.0.1:8000/admin/subscribed-emails" aria-expanded="false">
+                            <i class="ti-email menu-icon"></i><span class="nav-text">Subscribed Emails</span>
+                        </a>
+                    </li>
+
                 </ul>
             </div>
         </div>

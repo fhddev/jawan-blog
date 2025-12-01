@@ -40,8 +40,10 @@ Router::attach([
 	Route::get('/admin/users/edit/id', 'Admin/UserController@edit|id')->where(['id'=>'(\d+)']),
 	Route::post('/admin/users/edit_submit/id', 'Admin/UserController@edit_submit|id')->where(['id'=>'(\d+)']),
 	Route::get('/admin/users/delete_confirmation/id', 'Admin/UserController@delete_confirmation|id')->where(['id'=>'(\d+)']),
-	Route::post('/admin/users/destroy/id', 'Admin/UserController@destroy|id')->where(['id'=>'(\d+)'])
+	Route::post('/admin/users/destroy/id', 'Admin/UserController@destroy|id')->where(['id'=>'(\d+)']),
 
+	// subscribed emails
+	Route::get('/admin/subscribed-emails', 'Admin/SubscribedEmailController@index'),
 	
 ]);
 
