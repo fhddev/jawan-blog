@@ -45,6 +45,9 @@ Router::attach([
 
 	// subscribed emails
 	Route::get('/admin/subscribed-emails', 'Admin/SubscribedEmailController@index'),
+
+	// author
+	Route::get('/author/username', 'AuthorController@index|username')->where(['username'=>'([a-zA-Z\-\_1-9]+)']),
 	
 ]);
 

@@ -11,6 +11,8 @@
   <meta charset="utf-8">
   <title>Reader | Hugo Personal Blog Template</title>
 
+  <base href="http://127.0.0.1:8000" target="_blank">
+
   <!-- mobile responsive meta -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="This is meta description">
