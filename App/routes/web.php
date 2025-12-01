@@ -7,6 +7,8 @@ Router::attach([
 	//** Public website **//
 
 	Route::get('/', 'HomeController@index')->name('home'),
+	
+	Route::post('/email-subscribe', 'EmailSubscriptionController@subscribe'),
 
 	//** Admin dashboard **//
 	
