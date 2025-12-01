@@ -12,14 +12,15 @@ Router::attach([
 
 	//** Admin dashboard **//
 	
+	// admin user-related routes
 	Route::get('/admin/install', 'Admin\InstallController@install'),
 	Route::post('/admin/install_submit', 'Admin\InstallController@install_submit'),
-
 	Route::get('/admin/login', 'Admin\LoginController@login'),
 	Route::post('/admin/login_submit', 'Admin\LoginController@login_submit'),
-
 	Route::get('/admin/logout', 'Admin\LogoutController@index'),
+	Route::get('/admin/profile', 'Admin/ProfileController@index'),
 
+	// dashboard
 	Route::get('/admin/dashboard', 'Admin\DashboardController@index'),
 
 	// posts
