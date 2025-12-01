@@ -9,6 +9,12 @@ Router::attach([
 	Route::get('/', 'HomeController@index')->name('home'),
 	
 	Route::post('/email-subscribe', 'EmailSubscriptionController@subscribe'),
+	
+	// author
+	Route::get('/author/username', 'AuthorController@index|username')->where(['username'=>'([a-zA-Z\-\_1-9]+)']),
+
+	// post details
+	Route::get('/post/urlSlug', 'PostController@details|urlSlug')->where(['urlSlug'=>'([a-z0-9]+(?:-[a-z0-9]+)*)']),
 
 	//** Admin dashboard **//
 	
@@ -46,8 +52,5 @@ Router::attach([
 	// subscribed emails
 	Route::get('/admin/subscribed-emails', 'Admin/SubscribedEmailController@index'),
 
-	// author
-	Route::get('/author/username', 'AuthorController@index|username')->where(['username'=>'([a-zA-Z\-\_1-9]+)']),
-	
 ]);
 

@@ -99,8 +99,8 @@
 							<li class="list-inline-item">
 								<ul class="card-meta-tag list-inline">
 									<?php foreach( $post->decodeTags() as $tag ): ?>
-                  <li class="list-inline-item"><a href="/filter/tag=<?=$tag?>"><?=$tag?></a></li>
-                  <?php endforeach; ?>
+									<li class="list-inline-item"><a href="/filter/tag=<?=$tag?>"><?=$tag?></a></li>
+									<?php endforeach; ?>
 								</ul>
 							</li>
 						</ul>
