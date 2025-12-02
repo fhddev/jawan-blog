@@ -1,11 +1,6 @@
-# What is Jawan
+# Overview
 
-Jawan is an MVC Project Template built specifically for [Jawan Framework](https://github.com/fhddev/jawan-framework).
-
-## Notes
-- This template is for **learning purposes**.
-- It’s not **production-ready**.
-- Contributions are welcome!
+This is a simple blog website built using [Jawan Framework](https://github.com/fhddev/jawan).
 
 ## Requirements
 - PHP ^7.0
@@ -15,28 +10,47 @@ Jawan is an MVC Project Template built specifically for [Jawan Framework](https:
 
 ## Getting started
 
-Install via composer:
+Clone the repo:
+```shell
+git clone git@github.com:fhddev/jawan-blog.git
+```
+
+Install composer packages:
 
 ```shell
-composer create-project fhddev/jawan blog
-cd blog
+composer install
+```
+
+or use a pre-defined shell file:
+
+```shell
+./install-prod.sh
+```
+
+Run the server:
+
+```shell
 php jwnc serve
 ```
 
-Open this link in the browser `127.0.0.1:8000`.
+## Pages
 
-## Code Scaffolding
+Create admin user:
 
-Create new controller
-
-```shell
-php jwnc make:controller DummyController
+```
+http://127.0.0.1:8000/admin/install
 ```
 
-Create new model
+Admin login:
 
-```shell
-php jwnc make:model Dummy
+```
+http://127.0.0.1:8000/admin/login
+```
+
+Public page:
+
+```
+http://127.0.0.1:8000
 ```
 
 ## License
