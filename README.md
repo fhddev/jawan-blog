@@ -15,6 +15,16 @@ Clone the repo:
 git clone git@github.com:fhddev/jawan-blog.git
 ```
 
+Move to the folder:
+
+```
+cd jawan-blog
+```
+
+Create database:
+
+    Install database by importing sql file located in (App\data\schema.sql)
+
 Install composer packages:
 
 ```shell
